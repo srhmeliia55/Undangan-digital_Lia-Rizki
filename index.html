@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Lia & Rizki</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* --- 1. CONFIG & VARIABLES (BLUE THEME) --- */
+        :root {
+            --primary: #6dacd6;      /* Soft Blue */
+            --primary-dark: #3a6b8c; /* Navy Blue Accent */
+            --bg-color: #eff6fa;     /* Very Light Blue/White */
+            --white: #ffffff;
+            --text-main: #334e68;    /* Dark Blue-Grey Text */
+            --text-light: #829ab1;
+            --shadow-soft: 0 10px 30px -5px rgba(44, 82, 130, 0.1);
+            --shadow-3d: 0 20px 40px -5px rgba(109, 172, 214, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden; /* Default: Locked */
+            height: 100vh;    /* Default: Locked height */
+        }
+
+        /* --- FIX SCROLL BUG --- */
+        body.opened {
+            overflow-y: auto !important; /* Force Scroll Active */
+            height: auto !important;     /* Remove height restriction */
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+        .font-script { font-family: 'Great Vibes', cursive; }
+        
+        /* Helper Classes */
+        .text-primary { color: var(--primary-dark); }
+        .text-center { text-align: center; }
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .w-100 { width: 100%; }
+        
+        /* --- 2. DEKORASI BUNGA (BINGKAI) --- */
+        .flower-corner {
+            position: absolute;
+            width: 120px;
+            pointer-events: none; /* Agar tidak menghalangi klik */
+            z-index: 1;
+            opacity: 0.8;
+        }
+        
+        .top-left { top: -10px; left: -10px; transform: rotate(0deg); }
+        .bottom-right { bottom: -10px; right: -10px; transform: rotate(180deg); }
+
+        /* --- 3. COVER PAGE --- */
+        #cover {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            /* Gambar Cover dengan nuansa biru */
+            background: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 5rem;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        
+        #cover::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(44, 82, 130, 0.8) 0%, rgba(255,255,255,0) 60%);
+        }
+
+        .cover-content {
+            position: relative; z-index: 10; color: white; text-align: center;
+            width: 90%; max-width: 500px;
+            animation: slideUp 1.2s ease-out;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .guest-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(109, 172, 214, 0.5);
+        }
+        
+        .btn-main:hover { transform: translateY(-2px); background: var(--primary-dark); }
+
+        /* --- 4. MAIN CONTENT LAYOUT --- */
+        #main-app {
+            display: none; opacity: 0;
+            transition: opacity 1s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 0;
+        }
+
+        /* CARD STYLE - THEME BLUE & FLORAL */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+            /* Border atas diganti ornamen bunga */
+            border: 1px solid rgba(109, 172, 214, 0.1);
+            transition: transform 0.4s ease;
+        }
+
+        /* --- 5. SECTIONS --- */
+        
+        /* Couple Image */
+        .couple-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .couple-img-box {
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            border: 4px solid var(--primary); /* Bingkai Foto Biru */
+            padding: 5px;
+            margin: 0 auto 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .couple-img-box img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+
+        @media (min-width: 768px) {
+            .couple-wrap {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+            }
+        }
+
+        /* Countdown */
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 2rem auto;
+            position: relative; z-index: 2;
+        }
+        .timer-item {
+            background: var(--primary-dark);
+            color: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(58, 107, 140, 0.3);
+        }
+        .timer-num { font-size: 1.5rem; font-weight: bold; display: block; }
+        .timer-label { font-size: 0.7rem; text-transform: uppercase; }
+
+        /* Timeline */
+        .timeline {
+            border-left: 2px solid var(--primary);
+            margin-left: 10px; padding-left: 20px;
+            position: relative; z-index: 2;
+        }
+        .timeline-item { margin-bottom: 30px; position: relative; }
+        .timeline-item::before {
+            content: '✿'; /* Ganti dot dengan simbol bunga/bulat */
+            position: absolute; left: -28px; top: 0;
+            background: var(--bg-color); color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .year-badge {
+            background: var(--primary); color: white;
+            padding: 2px 10px; border-radius: 4px; font-size: 0.8rem;
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            position: relative; z-index: 2;
+        }
+        @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
+        .gallery-item {
+            aspect-ratio: 1/1; overflow: hidden; border-radius: 10px;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        
+        /* Bank Card - Blue Theme */
+        .bank-card {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e1eef7 100%);
+            border: 1px solid #bde0f5;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left;
+            margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; z-index: 2;
+        }
+        .btn-copy {
+            background: var(--white); color: var(--primary-dark);
+            border: 1px solid var(--primary); padding: 5px 15px;
+            border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+        }
+
+        /* Form */
+        .form-control {
+            width: 100%; padding: 12px;
+            border: 1px solid #cbd5e0; border-radius: 8px;
+            background: #f8fbff;
+        }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(109, 172, 214, 0.2); }
+
+        /* Floating Music */
+        .fab-music {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 50px; height: 50px;
+            background: var(--white);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+        }
+        .spin { animation: spin 4s linear infinite; }
+
+        /* Animation */
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .fade-in-up { opacity: 0; transform: translateY(40px); transition: 0.8s; }
+        .fade-in-up.active { opacity: 1; transform: translateY(0); }
+        
+        .opened #cover { transform: translateY(-100%); }
+        .opened #main-app { display: block; opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <audio id="music-player" loop>
+        <source src="Beautiful In White By Westlife.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-control" class="fab-music" style="display:none;" onclick="toggleMusic()">
+        <i class="bi bi-music-note-beamed"></i>
+    </div>
+
+    <section id="cover">
+        <div class="cover-content">
+            <h4 style="letter-spacing: 3px; margin-bottom: 1rem;">THE WEDDING OF</h4>
+            <h1 class="font-script" style="font-size: 4.5rem;">Lia & Rizki</h1>
+            <p style="margin-bottom: 20px; font-size: 1.1rem;">Kamis, 20 November 2025</p>
+            
+            <div class="guest-card">
+                <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
+                <h3 style="margin: 0.5rem 0; font-weight: 600;">Sarah Amelia & Partner</h3>
+            </div>
+
+            <button class="btn-main" onclick="openInvitation()">
+                <i class="bi bi-envelope-open-heart"></i> Buka Undangan
+            </button>
+        </div>
+    </section>
+
+    <main id="main-app">
+        <div class="container text-center">
+
+            <div class="card fade-in-up">
+                <img src="blue-flowers.png" class="flower-corner top-left" alt="flower">
+                <img src="blue-flowers.png" class="flower-corner bottom-right" alt="flower">
+
+                <h2 class="font-script text-primary" style="font-size: 3rem;">Assalamualaikum</h2>
+                <p class="text-primary" style="font-size: 1.2rem;">Wr. Wb.</p>
+                <p style="margin: 1.5rem 0; color: var(--text-main); line-height: 1.8;">
+                    Maha Suci Allah yang telah menciptakan makhluk-Nya berpasang-pasangan. 
+                    Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan putra-putri kami:
+                </p>
+            </div>
+
+            <div class="card fade-in-up">
+                <div class="couple-wrap">
+                    <div>
+                        <div class="couple-img-box">
+                            <img src="lia amelia.webp" alt="Lia">
+                        </div>
+                        <h2 class="font-script" style="font-size: 2.8rem; color: var(--primary-dark);">Lia Amelia</h2>
+                        <p style="color: #666;">Putri Bpk. Fulan & Ibu Fulanah</p>
+                        <div style="margin-top:10px;">
+                            <a href="#" class="text-primary"><i class="bi bi-instagram"></i> @srhmelia</a>
+                        </div>
+                    </div>
+
+                    <div class="separator-text font-script text-primary" style="font-size: 3rem; margin: 10px 0;">&</div>
+
+                    <div>
+                        <div class="couple-img-box">
+                            <img src="rizki.jpg" alt="Irul">
+                        </div>
+                        <h2 class="font-script" style="font-size: 2.8rem; color: var(--primary-dark);">Rizki Pratama</h2>
+                        <p style="color: #666;">Putra Bpk. Fulan & Ibu Fulanah</p>
+                        <div style="margin-top:10px;">
+                            <a href="#" class="text-primary"><i class="bi bi-instagram"></i> @dmszrzky</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in-up" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border:none;">
+                <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: url('https://www.transparenttextures.com/patterns/flowers.png'); opacity: 0.1;"></div>
+                
+                <h2 class="font-script" style="font-size: 3.5rem;">Save The Date</h2>
+                <p style="font-size: 1.1rem;">Kamis, 20 November 2025</p>
+
+                <div class="timer-grid">
+                    <div class="timer-item"><span class="timer-num" id="days">00</span><span class="timer-label">Hari</span></div>
+                    <div class="timer-item"><span class="timer-num" id="hours">00</span><span class="timer-label">Jam</span></div>
+                    <div class="timer-item"><span class="timer-num" id="minutes">00</span><span class="timer-label">Menit</span></div>
+                    <div class="timer-item"><span class="timer-num" id="seconds">00</span><span class="timer-label">Detik</span></div>
+                </div>
+
+                <a href="https://calendar.google.com/" target="_blank" class="btn-main" style="background: white; color: var(--primary-dark); z-index: 2; position: relative;">
+                    <i class="bi bi-calendar-check"></i> Simpan di Kalender
+                </a>
+            </div>
+
+            <div class="card fade-in-up">
+                <img src="blue-flowers.png" class="flower-corner top-left" alt="flower">
+                
+                <h2 class="font-script text-primary" style="font-size: 3rem; margin-bottom: 2rem;">Rangkaian Acara</h2>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; position: relative; z-index: 2;">
+                    <div style="flex: 1 1 300px; background: #f0f8ff; padding: 25px; border-radius: 15px; border: 1px dashed var(--primary);">
+                        <i class="bi bi-gem text-primary" style="font-size: 2rem;"></i>
+                        <h3 style="color: var(--primary-dark); margin-top: 10px;">Akad Nikah</h3>
+                        <p><strong>Kamis, 20 November 2025</strong></p>
+                        <p>Pukul 08.00 WIB - Selesai</p>
+                        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                        <p><i class="bi bi-geo-alt-fill text-primary"></i> Masjid Agung Jakarta</p>
+                    </div>
+
+                    <div style="flex: 1 1 300px; background: #f0f8ff; padding: 25px; border-radius: 15px; border: 1px dashed var(--primary);">
+                        <i class="bi bi-cup-hot-fill text-primary" style="font-size: 2rem;"></i>
+                        <h3 style="color: var(--primary-dark); margin-top: 10px;">Resepsi</h3>
+                        <p><strong>Kamis, 20 November 2025</strong></p>
+                        <p>Pukul 11.00 WIB - Selesai</p>
+                        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                        <p><i class="bi bi-geo-alt-fill text-primary"></i> Grand Hyatt Jakarta</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; position: relative; z-index: 2;">
+                    <a href="https://goo.gl/maps/placeholder" target="_blank" class="btn-main">
+                        <i class="bi bi-map-fill"></i> Lihat Lokasi Google Maps
+                    </a>
+                </div>
+            </div>
+
+            <div class="card fade-in-up">
+                <h2 class="font-script text-primary" style="font-size: 3rem;">Kisah Cinta</h2>
+                <br>
+                <div class="timeline" style="text-align: left;">
+                    <div class="timeline-item">
+                        <span class="year-badge">2018</span>
+                        <h4 style="color: var(--primary-dark);">Pertama Bertemu</h4>
+                        <p style="font-size: 0.9rem; color: #666;">Kami bertemu pertama kali melalui salah satu himpunan dikampus</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year-badge">2023</span>
+                        <h4 style="color: var(--primary-dark);">Lamaran</h4>
+                        <p style="font-size: 0.9rem; color: #666;">Setelah 3 tahun menjalin kasih, Rizki memberanikan diri melamar Lia.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year-badge">2025</span>
+                        <h4 style="color: var(--primary-dark);">The Wedding</h4>
+                        <p style="font-size: 0.9rem; color: #666;">InsyaAllah kami akan mengikat janji suci pernikahan selamanya.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in-up">
+                <h2 class="font-script text-primary" style="font-size: 3rem; margin-bottom: 20px;">Galeri Foto</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" alt="Wed 1"></div>
+                    <div class="gallery-item"><img src="1.jpg"></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" alt="Wed 3"></div>
+                    <div class="gallery-item"><img src="2.jpg" alt="Wed 4"></div>
+                </div>
+            </div>
+
+            <div class="card fade-in-up">
+                <img src="blue-flowers.png" class="flower-corner bottom-right" alt="">
+                
+                <h2 class="font-script text-primary" style="font-size: 3rem;">Wedding Gift</h2>
+                <p style="margin-bottom: 20px; position: relative; z-index: 2;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami.</p>
+                
+                <div style="max-width: 400px; margin: 0 auto;">
+                    <div class="bank-card">
+                        <div>
+                            <h5 style="margin-bottom: 5px; color: var(--primary-dark);">BCA</h5>
+                            <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; color: #333;" id="rek1">1234567890</p>
+                            <small>a.n Lia Amelia</small>
+                        </div>
+                        <button class="btn-copy" onclick="copyText('rek1')">Salin</button>
+                    </div>
+                    
+                    <div class="bank-card">
+                        <div>
+                            <h5 style="margin-bottom: 5px; color: var(--primary-dark);">MANDIRI</h5>
+                            <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; color: #333;" id="rek2">0987654321</p>
+                            <small>a.n Rizki Pratama</small>
+                        </div>
+                        <button class="btn-copy" onclick="copyText('rek2')">Salin</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in-up">
+                <h2 class="font-script text-primary" style="font-size: 3rem;">RSVP</h2>
+                <p style="margin-bottom: 20px;">Mohon konfirmasi kehadiran Anda:</p>
+
+                <form onsubmit="sendToWhatsapp(event)" style="max-width: 500px; margin: 0 auto; position: relative; z-index: 2;">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="name" class="form-control" placeholder="Isi nama Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Kehadiran</label>
+                        <select id="status" class="form-control">
+                            <option value="Hadir">Hadir</option>
+                            <option value="Tidak Hadir">Tidak Hadir</option>
+                            <option value="Masih Ragu">Masih Ragu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Orang</label>
+                        <select id="pax" class="form-control">
+                            <option value="1">1 Orang</option>
+                            <option value="2">2 Orang</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ucapan & Doa</label>
+                        <textarea id="message" class="form-control" rows="3" placeholder="Berikan ucapan..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-main w-100 flex-center">
+                        <i class="bi bi-whatsapp"></i> Konfirmasi via WhatsApp
+                    </button>
+                </form>
+            </div>
+
+            <footer style="margin-top: 3rem; margin-bottom: 5rem; font-size: 0.9rem;">
+                <h2 class="font-script" style="font-size: 2.5rem; color: var(--primary-dark);">Lia & Rizki</h2>
+                <p>Terima kasih atas doa dan restu Bapak/Ibu/Saudara/i.</p>
+                <br>
+                <small class="text-light">Made with ❤️ digitalundanganmodern.</small>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        // 1. OPEN INVITATION LOGIC & FIX SCROLL
+        function openInvitation() {
+            // Tambahkan class 'opened' ke body
+            document.body.classList.add('opened');
+            
+            // Paksa scroll ke atas main content saat dibuka
+            setTimeout(() => {
+                document.getElementById('main-app').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+
+            const music = document.getElementById('music-player');
+            music.play().catch(error => {
+                console.log("Autoplay prevented by browser, waiting for user interaction.");
+            });
+            
+            // Show music control button
+            document.getElementById('music-control').style.display = 'flex';
+            document.getElementById('music-control').classList.add('spin');
+        }
+
+        // 2. MUSIC TOGGLE
+        let isPlaying = true;
+        function toggleMusic() {
+            const music = document.getElementById('music-player');
+            const btn = document.getElementById('music-control');
+            
+            if (isPlaying) {
+                music.pause();
+                btn.classList.remove('spin');
+                btn.innerHTML = '<i class="bi bi-music-note-beamed text-light"></i>';
+            } else {
+                music.play();
+                btn.classList.add('spin');
+                btn.innerHTML = '<i class="bi bi-music-note-beamed text-primary"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 3. ANIMATION ON SCROLL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        // 4. COUNTDOWN
+        const targetDate = new Date("Dec 07, 2025 08:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            
+            if (diff > 0) {
+                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            }
+        }, 1000);
+
+        // 5. COPY TO CLIPBOARD
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Nomor rekening berhasil disalin!");
+            });
+        }
+
+        // 6. SEND TO WHATSAPP
+        function sendToWhatsapp(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const status = document.getElementById('status').value;
+            const pax = document.getElementById('pax').value;
+            const msg = document.getElementById('message').value;
+            
+            const phone = "6281234567890"; // Ganti no WA
+            const text = `Halo, saya ${name}.%0A%0AKehadiran: ${status}%0AJumlah: ${pax} Orang%0A%0APesan: ${msg}`;
+            
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        }
+    </script>
+</body>
+</html>
